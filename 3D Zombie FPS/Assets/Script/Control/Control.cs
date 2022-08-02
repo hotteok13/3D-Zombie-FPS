@@ -4,35 +4,68 @@ using UnityEngine;
 
 public class Control : MonoBehaviour
 {
-    //이동 속도
-    [SerializeField] float moveSpeed = 5.0f;
-
-    //마우스 회전 속도
-    [SerializeField] float angleSpeed = 3.5f;
-
-    //내부에 사용할 x축 회전량을 따로 정의
-    //카메라 위 아래 방향
-    [SerializeField] float xRotation;
     
+    [SerializeField] float Xspeed=3.5f;
+    [SerializeField] float Yspeed = 3.5f;
+
+    [SerializeField] float eulerAngleX;
+    [SerializeField] float eulerAngleY;
+
+    [SerializeField] float moveSpeed;
+
+    private float gravity = -9.81f;
+    private Vector3 moveForce;
+
+    private CharacterController characterControl;
+
+    public ParticleSystem particle;
+    
+
+    private void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        characterControl = GetComponent<CharacterController>();
+
+        
+    }
+
     void Update()
     {
-        MouseRotation();
+        UpdateRotate(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            particle.Play();
+        }
+
+        MoveTo(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
+
+        if (!characterControl.isGrounded)
+        {
+            moveForce.y += gravity * Time.deltaTime;
+        }
+
+        characterControl.Move(moveForce * Time.deltaTime);
     }
 
-    //마우스 움직임에 따라 카메라를 회전 시키는 함수
-    private void MouseRotation()
+    public void MoveTo(Vector3 direction)
     {
-        //좌우로 움직임 마우스의 이동량 x 속도에 따라 카메라가 좌우로 회전하는 값
-        float ySize = Input.GetAxis("Mouse X") * angleSpeed;
+        direction = transform.rotation * new Vector3(direction.x, 0, direction.z);
 
-        float y = transform.eulerAngles.y + ySize;
-
-        //상하로 움직임 마우스의 이동량 x 속도에 따라 카메라가 상하로 회전하는 값
-        float xSize = -Input.GetAxis("Mouse Y") * angleSpeed;
-
-        //-45는 하늘 방향 80은 아랫 방향
-        xRotation = Mathf.Clamp(xRotation + xSize, -45, 80);
-
-        transform.eulerAngles = new Vector3(xRotation, y, 0);
+        moveForce = new Vector3(direction.x * moveSpeed, moveForce.y, direction.z * moveSpeed);
     }
+
+    public void UpdateRotate(float mouseX, float mouseY)
+    {
+        eulerAngleY += mouseX * Yspeed;
+
+        
+
+        transform.rotation = Quaternion.Euler(0, eulerAngleY, 0);
+    }
+
+    
+    
 }
