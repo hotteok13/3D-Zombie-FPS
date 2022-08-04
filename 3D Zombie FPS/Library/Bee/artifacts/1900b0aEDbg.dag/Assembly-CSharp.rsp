@@ -353,6 +353,7 @@
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEngine.UI.ref.dll"
 "Assets/Light Example/Script/LightManager.cs"
 "Assets/Script/Control/AIControl.cs"
+"Assets/Script/Control/Bullet.cs"
 "Assets/Script/Control/CameraControl.cs"
 "Assets/Script/Control/Control.cs"
 "Assets/Script/Manager/SceneChange.cs"
