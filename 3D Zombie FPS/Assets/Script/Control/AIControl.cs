@@ -11,7 +11,7 @@ public class AIControl : MonoBehaviour
     [SerializeField] Transform[] wayPoint;
 
     private Transform tempPoint = null;
-    [SerializeField] int health;
+    public int health;
 
     Animator animator;
 
@@ -28,6 +28,7 @@ public class AIControl : MonoBehaviour
         if (health <= 0)
         {
             CancelInvoke();
+            agent.speed = 0;
             animator.Play("Death");
 
             Destroy(gameObject, 3);
@@ -58,7 +59,7 @@ public class AIControl : MonoBehaviour
 
     }
 
-    public void OnTriggerStay(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Character"))
         {
@@ -68,11 +69,19 @@ public class AIControl : MonoBehaviour
             transform.LookAt(other.transform);
 
             agent.SetDestination(tempPoint.position);
-            
+
         }
         if (other.CompareTag("Bullet"))
         {
             health -= 30;
+        }
+    }
+
+    public void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Character"))
+        {
+            transform.LookAt(other.transform);
         }
     }
 

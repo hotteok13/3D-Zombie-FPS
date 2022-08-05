@@ -18,4 +18,16 @@ public class Bullet : MonoBehaviour
         transform.Translate(character.transform.forward * speed * Time.deltaTime);
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
     }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Zombie")
+        {
+            other.gameObject.GetComponentInParent<AIControl>().health -= 20;
+            Debug.Log("Ãæµ¹");
+            Destroy(gameObject);
+        }
+    }
+
+    
 }
